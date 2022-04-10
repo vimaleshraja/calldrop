@@ -55,7 +55,7 @@ header = st.container()
 st.title("An Interactive Dashboard for Time-Series")
 st.subheader("------------------------")
 st.write("-------")
-data = pd.read_csv('PreProcessed.csv')
+data = pd.read_csv('all.csv')
 global numeric_columns
 if page == "Data":
 	
@@ -63,7 +63,7 @@ if page == "Data":
 		
 	with stats:
 		st.header('We have taken the below dataset for this analysis')
-		data = pd.read_csv('PreProcessed.csv')
+		data = pd.read_csv('all.csv')
 		st.write(data)
 
 #Visalization
@@ -88,10 +88,11 @@ elif page == "Visualization":
 		elif new == "Maps":
 			st.write('Please select the features:')
 			try:
-				lat = st.selectbox('Latitude', options=["Lat"])
-				lon = st.selectbox('Longitude', options=["Long"])
-				plot = px.scatter_mapbox(data_frame=data, lat="lat", lon="long", hover_data=["Traffic", "Call Dropped"])
-				st.map(plot)
+				px.set_mapbox_access_token("pk.eyJ1IjoidmltYWwxMjM0IiwiYSI6ImNsMXN2dGlmMDI3cjgzY28yaXNxZWR3ZnEifQ.gva5d-xA6tC-y191P8wRPA")
+				df = data.copy()
+				fig = px.scatter_mapbox(data_frame=df, lat="lat", lon="lon",zoom =15,hover_data=["outgoing_site_id","Traffic", "Call Dropped"], size_max=100)
+				st.plotly_chart(fig)
+	
 			except Exception as e:
 				print(e)
 		elif new == "Lineplot":

@@ -1,17 +1,8 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Apr  5 15:21:08 2022
-
-@author: Chandrasekaran
-"""
-
-
 import pandas as pd
 import numpy as np
 import streamlit as st
 import matplotlib.pyplot as plt
 import plotly.express as px
-import pickle
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import MinMaxScaler
@@ -20,79 +11,47 @@ from xgboost import XGBRegressor
 from sklearn.metrics import mean_squared_error
 from math import sqrt
 
-#Styling
-st.markdown(
-        f"""
-<style>
-    .reportview-container .main .block-container{{
-        max-width: 90%;
-        padding-top: 5rem;
-        padding-right: 5rem;
-        padding-left: 5rem;
-        padding-bottom: 5rem;
-    }}
-    img{{
-    	max-width:40%;
-    	margin-bottom:40px;
-    }}
-</style>
-""",
-        unsafe_allow_html=True,
-    )
-#----General
-valid_molecule = True
-loaded_molecule = None
-selection = None
-submit = None
-#-----sidebar
-page = st.sidebar.selectbox('Select Options', ["Data", "Visualization", "Model Analysis"])
-st.sidebar.markdown("""---""")
-st.sidebar.write("Created by [Chandrasekaran](https://www.linkedin.com/in/chandra-sekaran-52b160b3/)")
-#st.sidebar.image("PIC CHAN.jpeg", width=100)
+st.set_page_config(page_title='The Machine Learning App',
+    layout='wide')
 
-header = st.container()
-#st.image('TimeSeries.jpg')
-st.title("An Interactive Dashboard for Time-Series")
-st.subheader("------------------------")
-st.write("-------")
-data = pd.read_csv('all.csv')
-global numeric_columns
-if page == "Data":
-	
-	stats = st.container()
-		
-	with stats:
-		st.header('We have taken the below dataset for this analysis')
-		data = pd.read_csv('all.csv')
-		st.write(data)
+#Model build
 
-#Visalization
-elif page == "Visualization":
+#Main 
+st.title('An Interactive Machine Learning Dashboard')
+st.subheader('This Dashboard was created by Chandrasekaran, Vimalesh Raja')
+st.write('In this implementation, the *XGBRegressor()* function is used in this app to build a regression model using the XGBoost algorithm.')
 
-	vis = st.container()
-	with vis:
+
+
+#Page navigation
+page = st.sidebar.selectbox('Select Analysis', ["Visualization", "Forecasting"])
+# Displays the dataset
+with st.sidebar.header('Please Upload your CSV data'):
+    uploaded_file = st.sidebar.file_uploader("Upload your input CSV file", type=["csv"])
+st.subheader('Dataset')
+
+if uploaded_file is not None:
+    df = pd.read_csv(uploaded_file)
+    df = df.set_index('Datetime')
+    df['Start_Time_MM_DD_YYYY'] = pd.to_datetime(df.Start_Time_MM_DD_YYYY , format = '%Y%m%d')
+    st.markdown('**Glimpse of dataset**')
+    st.write(df)
+else:
+    st.info('Awaiting for CSV file to be uploaded.')
+
+if page == "Visualization":
 		st.header('Data Visualization tool')
 		st.write('This is to understand the data more and in-depth analysis')
-		numeric_columns = list(data.select_dtypes(['float','int']).columns)
-		new = st.selectbox('Which plot would you like to see?',["Histogram", "Lineplot", "Maps", "Piechart"])	
+		numeric_columns = list(df.select_dtypes(['float','int']).columns)
+		new = st.selectbox('Which plot would you like to see?',["Histogram", "Lineplot", "Piechart"])	
 		
 		if new == "Histogram":
 			st.write('Please select the features:')
 			try:
 				x_values = st.selectbox('X-axis', options = numeric_columns)
 				y_values = st.selectbox('Y-axis', options = numeric_columns)
-				plot = px.histogram(data_frame=data, x=x_values, y=y_values)
+				plot = px.histogram(data_frame=df, x=x_values, y=y_values, color='day')
 				st.plotly_chart(plot)
-			except Exception as e:
-				print(e)
-		elif new == "Maps":
-			st.write('Please select the features:')
-			try:
-				px.set_mapbox_access_token("pk.eyJ1IjoidmltYWwxMjM0IiwiYSI6ImNsMXN2dGlmMDI3cjgzY28yaXNxZWR3ZnEifQ.gva5d-xA6tC-y191P8wRPA")
-				df = data.copy()
-				fig = px.scatter_mapbox(data_frame=df, lat="lat", lon="lon",zoom =15,hover_data=["outgoing_site_id","Traffic", "Call Dropped"], size_max=100)
-				st.plotly_chart(fig)
-	
 			except Exception as e:
 				print(e)
 		elif new == "Lineplot":
@@ -100,7 +59,7 @@ elif page == "Visualization":
 			try:
 				x_values = st.selectbox('X-axis', options = numeric_columns)
 				y_values = st.selectbox('Y-axis', options = numeric_columns)
-				plot = px.line(data_frame=data, x=x_values, y=y_values)
+				plot = px.line(data_frame=df, x=x_values, y=y_values, title='Comparisons', color='day', symbol='drop%')
 				st.plotly_chart(plot)
 			except Exception as e:
 				print(e)
@@ -109,28 +68,10 @@ elif page == "Visualization":
 			try:
 				x_values = st.selectbox('X-axis', options = numeric_columns)
 				y_values = st.selectbox('Y-axis', options = numeric_columns)
-				plot = px.pie(data_frame=data, names=x_values, values=y_values)
+				plot = px.pie(data_frame=df, names=x_values, values=y_values, title='Pie Chart Comparisons')
 				st.plotly_chart(plot)
 			except Exception as e:
 				print(e)
-		
-			
-#Model_training
+
 else:
-	with st.container():
-		def build_model(data):
-			x = data.drop(columns = ['Call Dropped'])
-			y = data[['Call Dropped']]
-
-			
-
-			
-		
-		
-		
-		
-
-
-
-
-
+    print('Under Development')

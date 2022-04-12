@@ -45,26 +45,20 @@ loaded_molecule = None
 selection = None
 submit = None
 #-----sidebar
-page = st.sidebar.selectbox('Select Options', ["Data", "Visualization", "Model Analysis"])
+page = st.sidebar.selectbox('Select Options', ["Data", "Visualization", "Forecasting"])
 st.sidebar.markdown("""---""")
-st.sidebar.write("Created by [Chandrasekaran](https://www.linkedin.com/in/chandra-sekaran-52b160b3/)")
-st.sidebar.image("PIC CHAN.jpeg", width=100)
 
 header = st.container()
-st.image('TimeSeries.jpg')
 st.title("An Interactive Dashboard for Time-Series")
 st.subheader("------------------------")
 st.write("-------")
 data = pd.read_csv('newall.csv')
-data['Start_Time_MM_DD_YYYY'] = pd.to_datetime(data.Start_Time_MM_DD_YYYY , format = '%Y%m%d')
 global numeric_columns
-
-#Data
 if page == "Data":
 	
 	stats = st.container()	
 	with stats:
-		st.header('We have taken the below dataset for this analysis')
+		st.header('Glimpse of the Data')
 		st.write(data)
 
 #Visalization
@@ -74,16 +68,25 @@ elif page == "Visualization":
 	with vis:
 		st.header('Data Visualization tool')
 		st.write('This is to understand the data more and in-depth analysis')
-		numeric_columns = list(data.select_dtypes(['float','int','datetime']).columns)
-		new = st.selectbox('Which Chart would you like to see?',["Histogram", "Lineplot", "Piechart"])	
+		numeric_columns = list(data.select_dtypes(['float','int']).columns)
+		new = st.selectbox('Which plot would you like to see?',["Histogram", "Lineplot", "Maps", "Piechart"])	
 		
 		if new == "Histogram":
 			st.write('Please select the features:')
 			try:
 				x_values = st.selectbox('X-axis', options = numeric_columns)
 				y_values = st.selectbox('Y-axis', options = numeric_columns)
-				plot = px.histogram(data_frame=data, x=x_values, y=y_values,color='day')
+				plot = px.histogram(data_frame=data, x=x_values, y=y_values, color='day')
 				st.plotly_chart(plot)
+			except Exception as e:
+				print(e)
+		elif new == "Maps":
+			st.write('Please select the features:')
+			try:
+				px.set_mapbox_access_token("pk.eyJ1IjoidmltYWwxMjM0IiwiYSI6ImNsMXN2dGlmMDI3cjgzY28yaXNxZWR3ZnEifQ.gva5d-xA6tC-y191P8wRPA")
+				df = data.copy()
+				fig = px.scatter_mapbox(data_frame=data, lat="lat", lon="long",zoom =15,hover_data=["outgoing_site_id","Traffic", "Call Dropped"],color="outgoing_site_id", size_max=100)
+				st.plotly_chart(fig)
 			except Exception as e:
 				print(e)
 		elif new == "Lineplot":
@@ -91,7 +94,7 @@ elif page == "Visualization":
 			try:
 				x_values = st.selectbox('X-axis', options = numeric_columns)
 				y_values = st.selectbox('Y-axis', options = numeric_columns)
-				plot = px.line(data_frame=data, x=x_values, y=y_values, title='Comparisons', color='day')
+				plot = px.line(data_frame=data, x=x_values, y=y_values, color='day')
 				st.plotly_chart(plot)
 			except Exception as e:
 				print(e)
@@ -100,15 +103,15 @@ elif page == "Visualization":
 			try:
 				x_values = st.selectbox('X-axis', options = numeric_columns)
 				y_values = st.selectbox('Y-axis', options = numeric_columns)
-				plot = px.pie(data_frame=data, names=x_values, values=y_values, title='Pie Chart Comparisons')
+				plot = px.pie(data_frame=data, names=x_values, values=y_values)
 				st.plotly_chart(plot)
 			except Exception as e:
 				print(e)
 		
 			
-#Forecasting
+#Model_training
 else:
-	st.write('Under Development')
+	st.header("Under development")
 
 			
 
@@ -117,7 +120,6 @@ else:
 		
 		
 		
-
 
 
 

@@ -53,6 +53,7 @@ st.title("An Interactive Dashboard for Time-Series")
 st.subheader("------------------------")
 st.write("-------")
 data = pd.read_csv('newall.csv')
+data['Start_Time_MM_DD_YYYY'] = pd.to_datetime(data.Start_Time_MM_DD_YYYY , format = '%Y%m%d')
 global numeric_columns
 if page == "Data":
 	
@@ -68,7 +69,7 @@ elif page == "Visualization":
 	with vis:
 		st.header('Data Visualization tool')
 		st.write('This is to understand the data more and in-depth analysis')
-		numeric_columns = list(data.select_dtypes(['float','int']).columns)
+		numeric_columns = list(data.select_dtypes(['float','int', 'datetime']).columns)
 		new = st.selectbox('Which plot would you like to see?',["Histogram", "Lineplot", "Maps", "Piechart"])	
 		
 		if new == "Histogram":

@@ -69,7 +69,7 @@ elif page == "Visualization":
 	with vis:
 		st.header('Data Visualization tool')
 		st.write('This is to understand the data more and in-depth analysis')
-		numeric_columns = list(data.select_dtypes(['float','int', 'datetime']).columns)
+		numeric_columns = list(data.select_dtypes(['float','int', 'datetime', 'object']).columns)
 		new = st.selectbox('Which plot would you like to see?',["Histogram", "Lineplot", "Maps", "Piechart"])	
 		
 		if new == "Histogram":
@@ -77,7 +77,8 @@ elif page == "Visualization":
 			try:
 				x_values = st.selectbox('X-axis', options = numeric_columns)
 				y_values = st.selectbox('Y-axis', options = numeric_columns)
-				plot = px.histogram(data_frame=data, x=x_values, y=y_values, color='day')
+				co = st.selectbox('Color', options = numeric_columns)
+				plot = px.histogram(data_frame=data, x=x_values, y=y_values, color=co)
 				st.plotly_chart(plot)
 			except Exception as e:
 				print(e)
@@ -86,7 +87,10 @@ elif page == "Visualization":
 			try:
 				px.set_mapbox_access_token("pk.eyJ1IjoidmltYWwxMjM0IiwiYSI6ImNsMXN2dGlmMDI3cjgzY28yaXNxZWR3ZnEifQ.gva5d-xA6tC-y191P8wRPA")
 				df = data.copy()
-				fig = px.scatter_mapbox(data_frame=data, lat="lat", lon="long",zoom =15,hover_data=["outgoing_site_id","Traffic", "Call Dropped"],color="outgoing_site_id", size_max=100)
+				ho1 = st.selectbox('Hover data 1', options= numeric_columns)
+				ho2 = st.selectbox('Hover data 2', options= numeric_columns)
+				ho3 = st.selectbox('Hover data 3', options= numeric_columns)
+				fig = px.scatter_mapbox(data_frame=data, lat="lat", lon="long",zoom =15,hover_data=[ho1,ho2,ho3],color="outgoing_site_id", size_max=100)
 				st.plotly_chart(fig)
 			except Exception as e:
 				print(e)
@@ -95,7 +99,8 @@ elif page == "Visualization":
 			try:
 				x_values = st.selectbox('X-axis', options = numeric_columns)
 				y_values = st.selectbox('Y-axis', options = numeric_columns)
-				plot = px.line(data_frame=data, x=x_values, y=y_values, color='day')
+				co = st.selectbox('Color', options = numeric_columns)
+				plot = px.line(data_frame=data, x=x_values, y=y_values, color=co)
 				st.plotly_chart(plot)
 			except Exception as e:
 				print(e)

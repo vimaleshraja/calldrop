@@ -176,9 +176,9 @@ else:
 		new = new.rename(columns={'Call Dropped':'Original_Value'})
 		new = new.drop(columns = ['index'])
 		a=new[new['outgoing_site_id']==siteid]
-		fig, ax = plt.subplots(figsize=(25,15))
+		fig, ax = plt.subplots()
 		ax.plot(a['Original_Value'],marker='.', linestyle='-', linewidth=0.5, label='Original')
 		ax.plot(a['Prediction'],marker='o', linestyle='-', linewidth=0.5, label= 'Prediction')
 		ax.legend(bbox_to_anchor=(1,0), loc="lower right",bbox_transform=fig.transFigure, ncol=3)
-		st.write(fig)
+		st.plotly_chart(fig)
 

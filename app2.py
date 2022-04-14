@@ -179,6 +179,6 @@ else:
 		fig, ax = plt.subplots()
 		ax.plot(a['Original_Value'],marker='.', linestyle='-', linewidth=0.5, label='Original')
 		ax.plot(a['Prediction'],marker='o', linestyle='-', linewidth=0.5, label= 'Prediction')
-		ax.legend(bbox_to_anchor=(1,0), loc="lower right",bbox_transform=fig.transFigure, ncol=3)
+		
 		st.plotly_chart(fig)
 

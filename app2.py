@@ -14,7 +14,7 @@ import pickle
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import MinMaxScaler
-from IPython.core.pylabtools import figsize
+#from IPython.core.pylabtools import figsize
 from xgboost import XGBRegressor
 from sklearn.metrics import mean_squared_error
 from math import sqrt
